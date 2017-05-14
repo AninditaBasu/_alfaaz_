@@ -1,3 +1,5 @@
+![version 1.0](https://img.shields.io/badge/version-1.0-green.svg)  ![python 3.6.0](https://img.shields.io/badge/python-3.6.0-blue.svg)  ![license: GPL 3.0](https://img.shields.io/badge/license-GPL%203.0-lightgrey.svg)  
+
 # \_alfaaz\_
 
 twitter bot for:
@@ -20,7 +22,7 @@ One script tweets the translations and another tweets the stories.
 5. Tweet the image.
 6. Send the word to Platt's dictionary for a word search.
 7. Tweet the URL.
-7. Repeat steps 1 through 7 after a delay.
+8. Repeat steps 1 through 7 after a delay.
 
 For the code, see `words_u2e`.
 
