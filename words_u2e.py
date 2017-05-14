@@ -1,0 +1,175 @@
+import requests
+import json
+import urllib.parse
+from PIL import Image, ImageFont, ImageDraw
+import arabic_reshaper
+from bidi.algorithm import get_display
+import tweepy
+from time import sleep
+
+# -------- libraries ----------
+# requests is for pinging the Oxford Dictionaries API
+# json is for parsing the response from Oxford Dictionaries
+# urllib.parse is for composing the URL of the Platt's dictionary; a simple
+#       concatenation breaks the URL at the query parameter
+# PIL is for placing the words on to an image
+# arabic_reshaper is for correctly displaying the words in nastalikh
+#       and has a dependency on python-bidi, called here as bidi.algorithm
+#       arabic_reshaper is from http://mpcabd.xyz/python-arabic-text-reshaper/
+# tweepy is for posting updates to Twitter
+# sleep is for setting a time lag between tweets
+#
+
+# ------- word list for the day ---------
+word_list = {
+'الفاظ':'Ehsaas alfaaz ka mohtaj nahin'
+}
+
+# ------------ declare the OxfordDictionary API credentials  -----------
+app_id = ''
+app_key = ''
+
+# -------------- declare the Twitter credentials -------------
+token = ''
+token_secret = ''
+consumer_key = ''
+consumer_secret = ''
+
+# ----------- Platt's dictionary URL ----------
+platts_url_base = 'http://dsalsrv02.uchicago.edu/cgi-bin/philologic/search3advanced?dbname=platts&query='
+platts_url_suffix = '&matchtype=contain&display=utf8'
+
+# ----------- Oxford Dictionaries URL and other parameters ----------
+api_base_url = 'https://od-api.oxforddictionaries.com/api/v1/entries/'
+source_language = 'ur'
+target_language = 'en'
+
+# ---------- Unicode conversion for Urdu alphabets -------------
+# unicode mapping is from http://www.user.uni-hannover.de/nhtcapri/urdu-alphabet.html
+buck2uni = {
+        u"\u0621": "",
+        u"\u0654": "",
+        u"\u0627": "अ",
+        u"\u0622": "आ",
+        u"\u0628": "ब",
+        u"\u067E": "प",
+        u"\u062A": "त",
+        u"\u0679": "ट",
+        u"\u067F": "ट",
+        u"\u062B": "स",
+        u"\u062C": "ज",
+        u"\u0686": "च",
+        u"\u062D": "ह",
+        u"\u062E": "ख़",
+        u"\u062F": "द",
+        u"\u0688": "ड",
+        u"\u0690": "ड",
+        u"\u0630": "ज़",
+        u"\u0631": "र",
+        u"\u0691": "ड़",
+        u"\u0699": "ड़",
+        u"\u0632": "ज़",
+        u"\u0698": "झ़",
+        u"\u0633": "स",
+        u"\u0634": "श",
+        u"\u0635": "स",
+        u"\u0636": "ज़",
+        u"\u0637": "त",
+        u"\u0638": "ज़",
+        u"\u0639": "अ",
+        u"\u063A": "ग़",
+        u"\u0641": "फ़",
+        u"\u0642": "क़",
+        u"\u06A9": "क",
+        u"\u06AF": "ग",
+        u"\u0644": "ल",
+        u"\u0645": "म",
+        u"\u0646": "न",
+        u"\u06BA": "ँ",
+        u"\u0648": "व/ऊ",
+        u"\u0624": "ओ",
+        u"\u06C1": "ह",
+        u"\u0647": "ह",
+        u"\u06CC": "य/ई",
+        u"\u06D2": "ए"
+    }
+
+# --------- authenticate with Twitter ---------
+try:
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.secure = True
+    auth.set_access_token(token, token_secret)
+    api = tweepy.API(auth)
+except:
+    print('Could not authenticate with Twitter')
+
+# ----------- pick a word, generate phonetic devanagari, get translations, put on canvas, tweet every 90 minutes 3 times -----------
+for word_id, song in word_list.items():
+    print(word_id)
+    print(song)
+    # make the pillow canvas ready
+    hindiFont = ImageFont.truetype('nakula.ttf', 24)
+    arialFont = ImageFont.truetype('C:/Windows/Fonts/arial.ttf', 32)
+    calibriFont = ImageFont.truetype('C:/Windows/Fonts/calibri.ttf', 24)
+    tweetpic = Image.new('RGBA', (640, 360), 'white')
+    draw = ImageDraw.Draw(tweetpic, 'RGBA')
+    draw.rectangle((2, 2, 638, 358), fill='white', outline='#172A82')
+    # reshape the urdu word so that it can be put on the canvas
+    urdu_text = arabic_reshaper.reshape(word_id)
+    bidi_text = get_display(urdu_text)
+    draw.text((20, 20), bidi_text, '#172A82', font=arialFont)
+    # transliterate the word to phonetic devanagari
+    # code is based on a Medium post: https://medium.com/@itsShanKhan/transliterate-urdu-to-roman-urdu-in-python-614953b1a4d5
+    def transString(string, reverse=0):
+        '''Given a Unicode string, transliterate into Buckwalter. To go from
+        Buckwalter back to Unicode, set reverse=1'''
+        for k, v in buck2uni.items():
+            if not reverse:
+                string = string.replace(k, v + ' ')
+            else:
+                string = string.replace(v, k)
+        return string
+    word_id.encode('utf-8', 'ignore')
+    word_transliterate_hi = transString(word_id)
+    print(word_transliterate_hi)
+    #draw.text((140, 20), word_transliterate_hi, '#172A82', font=hindiFont)
+    draw.line((10, 70, 628, 70), fill='#172A82')
+    # get the translations
+    pos = 40
+    try:
+        url = api_base_url + source_language + '/' + word_id + '/translations=' + target_language
+        r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
+        json_data = json.loads(json.dumps(r.json()))
+        target_word_id = json_data['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
+        # put each translation on to the Pillow canvas
+        for item in target_word_id:
+            for item2 in item['translations']:
+                trans_word = '- ' + item2['text']
+                pos = pos + 40
+                print(trans_word)
+                draw.text((20, pos), trans_word, (0, 0, 0, 255), font=calibriFont)
+    except:
+        draw.text((20, 100), "The Oxford Urdu - English dictionary does not"(0, 0, 0, 255), font=calibriFont)
+        draw.text((20, 120), "have a translation for this word yet."(0, 0, 0, 255), font=calibriFont)
+        draw.text((20, 160), "See if the next tweet fares any better? It's supposed to show you"(0, 0, 0, 255), font=calibriFont)
+        draw.text((20, 180), "an entry from John T. Platt's 'Dictionary of Urdu, Classical Hindi, and English'."(0, 0, 0, 255), font=calibriFont)
+    # save the image to the local drive and tweet the image
+    tweetpic.save('tweetpic.png')
+    try:
+        tweet_text = 'Word: ' + word_id + ' Phonetic: ' + word_transliterate_hi + ' Example: ' + song + '. Word translation from Oxford Dictionaries API.'
+        api.update_with_media('tweetpic.png', status=tweet_text)
+    except:
+        print('Could not post image')
+    sleep(15)  # so that the Twitter rate limits are not breached
+    # generate a link to the Platt's dictionary, tweet the link
+    platts_url = platts_url_base + urllib.parse.quote((word_id), safe='') + platts_url_suffix
+    print(platts_url)
+    try:
+        text = "Entry for " + word_id + " from John T. Platt's Dictionary of Urdu, Classical Hindi, and English"
+        tweet_text = str.join(' ',(text, platts_url))
+        api.update_status(status=tweet_text)
+    except:
+        print("Could not post Platt's link")
+    print('------------------------')
+    # delay for 1.5 hours till the next round of word lookup and tweeting
+    sleep(5400)
