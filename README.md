@@ -5,9 +5,18 @@
 twitter bot for:
 
 - urdu-to-english word translations
-- twitter stories generated from Hindi film songs
+- twitter stories happiy quoting Hindi film songs
 
 Live at [https://twitter.com/_alfaaz_](https://twitter.com/_alfaaz_)
+
+-  [How it works](#how-it-works)
+-  [APIs](#apis)
+-  [Python libraries](#python-libraries)
+-  [ToDo for urdu2english word meanings](#todo-for-urdu-to-english-word-meanings)
+-  [ToDo for bot stories](#todo-for-bot-stories)
+-  [Acknowledgements](#acknowledgements)
+-  [License](#license)
+
 
 ## How it works
 
@@ -48,6 +57,29 @@ For the code, see `stories.py`.
 - For images: [Pillow](https://pypi.python.org/pypi/Pillow/)
 - For tweets: [tweepy](http://docs.tweepy.org/en/v3.5.0/index.html)
 - Other libraries: `requests`, `json`, `time`, `urllib` 
+
+## ToDo for urdu to english word meanings
+
+### Easy
+
+- If a meaning has more than 45 (?) characters, line break in image.
+- If a word has more than 5 lines of meanings, carry over the meanings to a new image.
+- Only if OxfordAPI returns a Nil result, tweet a Platts link, with exact word match.
+- Only if both OxfordAPI and Platts return a Nil result, tweet aShakespear link with exact word match.
+- If all three return Nil results, tweet a Sorry message.
+
+## Moderately difficult
+
+- Break up the Urdu word into letters, tweet the nastaliq > devanagari mapping.
+
+### Very difficult
+
+- Automatically generate the correctly spelt devanagari word from the nastaliq word.
+
+## ToDo for bot stories
+
+- More fragments, more combos
+- Pick even a combo randomly
 
 ## Acknowledgements
 
