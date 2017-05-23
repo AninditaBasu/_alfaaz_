@@ -1,6 +1,6 @@
 ![version 1.0](https://img.shields.io/badge/version-1.0-green.svg)  ![python 3.6.0](https://img.shields.io/badge/python-3.6.0-blue.svg)  ![license: GPL 3.0](https://img.shields.io/badge/license-GPL%203.0-lightgrey.svg)  
 
-# \_alfaaz\_
+# _alfaaz_
 
 twitter bots for:
 
@@ -9,12 +9,17 @@ twitter bots for:
 
 Live at [https://twitter.com/_alfaaz_](https://twitter.com/_alfaaz_)
 
--  [APIs](#apis)
--  [Python libraries](#python-libraries)
--  [ToDo for urdu2english word meanings](#todo-for-urdu-to-english-word-meanings)
--  [ToDo for bot stories](#todo-for-bot-stories)
--  [Acknowledgements](#acknowledgements)
--  [License](#license)
+  [APIs](#apis)
+  
+  [Python libraries](#python-libraries)
+  
+  [ToDo for urdu2english word meanings](#todo-for-urdu-to-english-word-meanings)
+  
+  [ToDo for bot stories](#todo-for-bot-stories)
+  
+  [Acknowledgements](#acknowledgements)
+  
+  [License](#license)
 
 <hr/>
 
@@ -42,27 +47,27 @@ Live at [https://twitter.com/_alfaaz_](https://twitter.com/_alfaaz_)
 
 ### Easy
 
-- If a meaning has more than 60 (?) characters, line break in image.
-- If a word has more than 5 lines of meanings, carry over the meanings to a new image.
-- Only if OxfordAPI returns a Nil result, tweet a Platts link, with exact word match.
-- Only if both OxfordAPI and Platts return a Nil result, tweet aShakespear link with exact word match.
-- If all three return Nil results, tweet a Sorry message.
+- [ ] If a meaning has more than 60 characters, put a line break in image.
+- [ ] If a word has more than 5 lines of meanings, carry over the meanings to a new image.
+- [ ] Only if OxfordAPI returns a Nil result, tweet a Platts link, with exact word match.
+- [ ] Only if both OxfordAPI and Platts return a Nil result, tweet a Shakespear link with exact word match.
+- [ ] If all three return Nil results, tweet a Sorry message.
 
 ## Moderately difficult
 
-- Break up the Urdu word into letters, tweet the nastaliq > devanagari mapping.
+- [ ] Break up the Urdu word into letters, tweet the nastaliq > devanagari mapping.
 
 ### Very difficult
 
-- Automatically generate the correctly spelt devanagari word from the nastaliq word.
+- [ ] Automatically generate the correctly spelt devanagari word from the nastaliq word.
 
 [Top](#alfaaz)
 <hr/>
 
 ## ToDo for bot stories
 
-- More fragments, more combos, more fun
-- Pick a combo randomly
+- [ ] More fragments, more combos, more fun
+- [ ] Pick a combo randomly
 
 [Top](#alfaaz)
 <hr/>
