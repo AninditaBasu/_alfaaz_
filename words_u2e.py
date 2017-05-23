@@ -20,6 +20,17 @@ from time import sleep
 # sleep is for setting a time lag between tweets
 #
 
+# -------- how it works ----------
+# 1.  Pull an Urdu word, in Nastalikh script, from a word list.
+# 2.  Send the word to Oxford Dictionaries for a translation.
+# 3.  Transliterate the word to English.
+# 4.  Put the word, its transliteration, and translations on to an image.
+# 5.  Tweet the image.
+# 6.  Send the word to Platt's dictionary for a word search.
+# 7.  Tweet the URL.
+# 8.  Repeat steps 1 through 7 after a delay.
+#
+
 # ------- word list for the day ---------
 word_list = {
 'الفاظ':'Ehsaas alfaaz ka mohtaj nahin'
