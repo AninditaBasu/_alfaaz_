@@ -10,7 +10,16 @@ from time import sleep
 # sleep is for setting a time lag between tweets
 #
 
+# -------- how it works ---------
+# 1.  Create lists of story fragments from Hindi film songs.
+# 2.  Generate a story by joining 2 random entries from the lists.
+# 3.  Tweet the story.
+# 4.  Repeat steps 2 and 3 after a delay.
+#
+
 # -------- put the data of the CSV file into lists --------
+# first into temporary lists
+# and then delete empty strings and put into better-named lists
 temp = []
 with open('fragments.csv') as f:
     reader = csv.reader(f)
