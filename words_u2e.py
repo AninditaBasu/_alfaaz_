@@ -48,7 +48,7 @@ consumer_secret = ''
 
 # ----------- Platt's dictionary URL ----------
 platts_url_base = 'http://dsalsrv02.uchicago.edu/cgi-bin/philologic/search3advanced?dbname=platts&query='
-platts_url_suffix = '&matchtype=contain&display=utf8'
+platts_url_suffix = '&matchtype=exact&display=utf8'
 
 # ----------- Oxford Dictionaries URL and other parameters ----------
 api_base_url = 'https://od-api.oxforddictionaries.com/api/v1/entries/'
