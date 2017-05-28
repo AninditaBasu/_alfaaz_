@@ -156,9 +156,19 @@ for word_id, song in word_list.items():
         for item in target_word_id:
             for item2 in item['translations']:
                 trans_word = '- ' + item2['text']
-                pos = pos + 40
-                print(trans_word)
-                draw.text((20, pos), trans_word, (0, 0, 0, 255), font=calibriFont)
+                if len(trans_word) > 60:
+                    text_1 = trans_word[:59]
+                    text_2 = "  " + trans_word[60:]
+                    print(text_1)
+                    print(text_2)
+                    pos = pos + 40
+                    draw.text((20, pos), text_1, (0, 0, 0, 255), font=calibriFont)
+                    pos = pos + 40
+                    draw.text((20, pos), text_2, (0, 0, 0, 255), font=calibriFont)
+                else:
+                    pos = pos + 40
+                    print(trans_word)
+                    draw.text((20, pos), trans_word, (0, 0, 0, 255), font=calibriFont)
     except:
         draw.text((20, 100), "The Oxford Urdu - English dictionary does not"(0, 0, 0, 255), font=calibriFont)
         draw.text((20, 120), "have a translation for this word yet."(0, 0, 0, 255), font=calibriFont)
