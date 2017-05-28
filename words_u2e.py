@@ -57,7 +57,8 @@ target_language = 'en'
 
 # ---------- Unicode conversion for Urdu alphabets -------------
 # unicode mapping is from http://www.user.uni-hannover.de/nhtcapri/urdu-alphabet.html
-buck2uni = {
+# do-chashmi-hey is from https://en.wikipedia.org/wiki/Urdu_alphabet#The_2_he.27s
+nast2dev = {
         u"\u0621": "",
         u"\u0654": "",
         u"\u0627": "अ",
@@ -102,7 +103,8 @@ buck2uni = {
         u"\u06C1": "ह",
         u"\u0647": "ह",
         u"\u06CC": "य/ई",
-        u"\u06D2": "ए"
+        u"\u06D2": "ए",
+        u"\u06BE": "ह"
     }
 
 # --------- authenticate with Twitter ---------
@@ -114,7 +116,7 @@ try:
 except:
     print('Could not authenticate with Twitter')
 
-# ----------- pick a word, generate phonetic devanagari, get translations, put on canvas, tweet every 90 minutes 3 times -----------
+# ----------- pick a word, generate phonetic devanagari, get translations, put on canvas, tweet -----------
 for word_id, song in word_list.items():
     print(word_id)
     print(song)
@@ -130,25 +132,31 @@ for word_id, song in word_list.items():
     bidi_text = get_display(urdu_text)
     draw.text((20, 20), bidi_text, '#172A82', font=arialFont)
     # transliterate the word to phonetic devanagari
-    # code is based on a Medium post: https://medium.com/@itsShanKhan/transliterate-urdu-to-roman-urdu-in-python-614953b1a4d5
-    def transString(string, reverse=0):
-        '''Given a Unicode string, transliterate into Buckwalter. To go from
-        Buckwalter back to Unicode, set reverse=1'''
-        for k, v in buck2uni.items():
-            if not reverse:
-                string = string.replace(k, v + ' ')
-            else:
-                string = string.replace(v, k)
-        return string
+    word_id_ur = word_id
     word_id.encode('utf-8', 'ignore')
-    word_transliterate_hi = transString(word_id)
-    print(word_transliterate_hi)
+    for k, v in nast2dev.items():
+        word_id = word_id.replace(k, v + ',')
+    word_id = word_id[:-1]
+    word_id_hi = word_id.split(",")
+    i = 0
+    j = len(word_id_ur)
+    hi_pos = 110# not used yet
+    while i < j:
+        print(word_id_hi[i], word_id_ur[i])
+        urdu_text = arabic_reshaper.reshape(word_id_ur[i])
+        bidi_text = get_display(urdu_text)
+        draw.text((hi_pos, 20), bidi_text, '#172A82', font=arialFont)
+        temp = ' = ' + word_id_hi[i]
+        draw.text((hi_pos + 20, 20), temp, '#172A82', font=hindiFont)
+        i = i + 1
+        hi_pos = hi_pos + 110
     #draw.text((140, 20), word_transliterate_hi, '#172A82', font=hindiFont)
     draw.line((10, 70, 628, 70), fill='#172A82')
     # get the translations
     pos = 40
+    print(word_id_ur)
     try:
-        url = api_base_url + source_language + '/' + word_id + '/translations=' + target_language
+        url = api_base_url + source_language + '/' + word_id_ur + '/translations=' + target_language
         r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
         json_data = json.loads(json.dumps(r.json()))
         target_word_id = json_data['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
@@ -156,6 +164,9 @@ for word_id, song in word_list.items():
         for item in target_word_id:
             for item2 in item['translations']:
                 trans_word = '- ' + item2['text']
+                # only 60 characters fit into one line of the Pillow image
+                # if the current font sizes are used. So, trim into two sentences
+                # if needed
                 if len(trans_word) > 60:
                     text_1 = trans_word[:59]
                     text_2 = "  " + trans_word[60:]
@@ -170,10 +181,11 @@ for word_id, song in word_list.items():
                     print(trans_word)
                     draw.text((20, pos), trans_word, (0, 0, 0, 255), font=calibriFont)
     except:
-        draw.text((20, 100), "The Oxford Urdu - English dictionary does not"(0, 0, 0, 255), font=calibriFont)
-        draw.text((20, 120), "have a translation for this word yet."(0, 0, 0, 255), font=calibriFont)
-        draw.text((20, 160), "See if the next tweet fares any better? It's supposed to show you"(0, 0, 0, 255), font=calibriFont)
-        draw.text((20, 180), "an entry from John T. Platt's 'Dictionary of Urdu, Classical Hindi, and English'."(0, 0, 0, 255), font=calibriFont)
+        draw.text((20, 100), "The Oxford Urdu - English dictionary does not",(0, 0, 0, 255), font=calibriFont)
+        draw.text((20, 125), "have a translation for this word yet.",(0, 0, 0, 255), font=calibriFont)
+        draw.text((20, 170), "See if the next tweet fares better? It's supposed to",(0, 0, 0, 255), font=calibriFont)
+        draw.text((20, 195), "show an entry from John T. Platt's 'Dictionary of Urdu,",(0, 0, 0, 255), font=calibriFont)
+        draw.text((20, 220), "Classical Hindi, and English'.",(0, 0, 0, 255), font=calibriFont)
     # save the image to the local drive and tweet the image
     tweetpic.save('tweetpic.png')
     try:
