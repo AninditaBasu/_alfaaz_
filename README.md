@@ -1,29 +1,28 @@
-![version 1.0](https://img.shields.io/badge/version-1.0-green.svg)  ![python 3.6.0](https://img.shields.io/badge/python-3.6.0-blue.svg)  ![license: GPL 3.0](https://img.shields.io/badge/license-GPL%203.0-lightgrey.svg)  
+![python 3.6.0](https://img.shields.io/badge/python-3.6.0-blue.svg)  ![license: GPL 3.0](https://img.shields.io/badge/license-GPL%203.0-lightgrey.svg)  
 
-# _alfaaz_
+# \_alfaaz\_
 
 Twitter bots for:
 
 - Urdu-to-English word translations. See `words_u2e`.
 - Twitter stories. See `stories.py`.
 
-Live at [https://twitter.com/_alfaaz_](https://twitter.com/_alfaaz_)
+Live at [https://twitter.com/\_alfaaz\_](https://twitter.com/_alfaaz_)
+Explanations on dev.to:
+-  [How bots tweet Urdu word meanings in English](https://dev.to/aninditabasu/how-bots-tweet-urdu-word-meanings-in-english)
+-  How bots write stories (ToBeDone)
 
 <hr/>
 
-  [APIs](#apis)
-  
-  [Python libraries](#python-libraries)
-  
-  [Bugs, enhancements](#bugs-enhancements)
-  
-  [Acknowledgements](#acknowledgements)
-  
-  [License](#license)
+ -  [API credentials](#api-credentials)
+ -  [Python libraries](#python-libraries)
+ -  [Bugs, enhancements](#bugs-enhancements)
+ -  [Acknowledgements](#acknowledgements)-
+ -  [License](#license)
 
 <hr/>
 
-## APIs
+## API credentials
 
 - For the translations, [Oxford Dictionaries API](https://developer.oxforddictionaries.com/documentation)
 - For tweeting, [Twitter API](https://dev.twitter.com/rest/public)
@@ -32,10 +31,10 @@ Live at [https://twitter.com/_alfaaz_](https://twitter.com/_alfaaz_)
 
 ## Python libraries
 
-- For translations:
-  - [arabic_reshaper](http://mpcabd.xyz/python-arabic-text-reshaper/)
-  - [python-bidi](https://pypi.python.org/pypi/python-bidi)
-- For images: [Pillow](https://pypi.python.org/pypi/Pillow/)
+- For images:
+  -  [Pillow](https://pypi.python.org/pypi/Pillow/)
+  -  [arabic_reshaper](http://mpcabd.xyz/python-arabic-text-reshaper/)
+  -  [python-bidi](https://pypi.python.org/pypi/python-bidi)
 - For tweets: [tweepy](http://docs.tweepy.org/en/v3.5.0/index.html)
 - Other libraries: `requests`, `json`, `time`, `urllib`, `csv`, `random`
 
