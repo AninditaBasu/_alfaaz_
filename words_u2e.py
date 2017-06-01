@@ -193,7 +193,40 @@ for word_id, song in word_list.items():
         api.update_with_media('tweetpic.png', status=tweet_text)
     except:
         print('Could not post image')
-    sleep(15)  # so that the Twitter rate limits are not breached
+# ----------- pick the Hindi word from the list, get meanings, tweet -----------
+    print(hi_word)
+    hindi_meanings = []
+    try:
+        url = api_base_url + hindi_language + '/' + hi_word
+        r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
+        json_data = json.loads(json.dumps(r.json()))
+        hindi_meanings = json_data['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
+        if not hindi_meanings:
+            hindi_meanings = json_data['results'][0]['lexicalEntries'][1]['entries'][0]['senses']
+        print(hindi_meanings)
+        print('length', len(hindi_meanings))
+    except:
+        print('Could not retrieve Hindi meanings')
+    try:
+        line1 = 'Hindi meanings of ' + word_id_ur + ' (' + hi_word + ') from OxfordDictionariesAPI: '
+        line2 = ''
+        a = 0#a counter to check word pos; if not first word, append a comma (for composing tweet text)
+        for item in hindi_meanings:
+            for item2 in item['definitions']:
+                print(item2)
+                if a == 0:
+                    text = item2
+                else:
+                    text = ', ' + item2
+                line2 = line2 + text
+                a = a + 1
+        print(line1, line2)
+        tweet_text = str.join(' ',(line1, line2))
+        sleep(30)  # so that Twitter rate limits are not breached
+        api.update_status(status=tweet_text)
+    except:
+        print('Could not tweet Hindi words.')
+    sleep(30)# so that the Twitter rate limits are not breached
     # generate a link to the Platt's dictionary, tweet the link
     platts_url = platts_url_base + urllib.parse.quote((word_id), safe='') + platts_url_suffix
     print(platts_url)
