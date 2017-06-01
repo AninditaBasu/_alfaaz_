@@ -33,7 +33,7 @@ from time import sleep
 
 # ------- word list for the day ---------
 word_list = {
-'الفاظ':'Ehsaas alfaaz ka mohtaj nahin'
+'الفاظ':['एहसास','Ehsaas alfaaz ka mohtaj nahin']
 }
 
 # ------------ declare the OxfordDictionary API credentials  -----------
@@ -209,7 +209,10 @@ for word_id, song in word_list.items():
         print('Could not retrieve Hindi meanings')
     try:
         line1 = 'Hindi meanings of ' + word_id_ur + ' (' + hi_word + ') from OxfordDictionariesAPI: '
-        line2 = ''
+        if not hindi_meanings:
+                line2 = 'No entries found'
+        else:
+                line2 = ''
         a = 0#a counter to check word pos; if not first word, append a comma (for composing tweet text)
         for item in hindi_meanings:
             for item2 in item['definitions']:
