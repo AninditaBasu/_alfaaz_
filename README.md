@@ -8,10 +8,12 @@ Twitter bots for:
 - Twitter stories. See `stories.py`.
 
 Live at [https://twitter.com/\_alfaaz\_](https://twitter.com/_alfaaz_)
+
 Explanations on dev.to:
 -  [How bots tweet Urdu word meanings in English](https://dev.to/aninditabasu/how-bots-tweet-urdu-word-meanings-in-english)
 -  How bots write stories (ToBeDone)
 
+<hr/>
 <hr/>
 
  -  [API credentials](#api-credentials)
