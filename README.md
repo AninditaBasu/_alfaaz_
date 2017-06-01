@@ -13,8 +13,6 @@ Explanations on dev.to:
 -  [How bots tweet Urdu word meanings in English](https://dev.to/aninditabasu/how-bots-tweet-urdu-word-meanings-in-english)
 -  How bots write stories (ToBeDone)
 
-<hr/>
-
 This README file contains the following sections:
 
  -  [API credentials](#api-credentials)
@@ -30,8 +28,6 @@ This README file contains the following sections:
 - For the translations, [Oxford Dictionaries API](https://developer.oxforddictionaries.com/documentation)
 - For tweeting, [Twitter API](https://dev.twitter.com/rest/public)
 
-<hr/>
-
 ## Python libraries
 
 - For images:
@@ -41,21 +37,15 @@ This README file contains the following sections:
 - For tweets: [tweepy](http://docs.tweepy.org/en/v3.5.0/index.html)
 - Other libraries: `requests`, `json`, `time`, `urllib`, `csv`, `random`
 
-<hr/>
-
 ## Bugs, enhancements
 
 See the [Issues](https://github.com/AninditaBasu/_alfaaz_/issues) page.
-
-<hr/>
 
 ## Acknowledgements
 
 -  The code for Nastalikh to Devanagari phonetic transliteration is based on [Shan Ali Khan's](https://twitter.com/itsShanKhan) script posted on [Medium](https://medium.com/@itsShanKhan/transliterate-urdu-to-roman-urdu-in-python-614953b1a4d5).
 -  Word meanings are, in the first instance, from Oxford Dictionaries. If no meaning is found, the fallback dictionaries are the Urdu dictionaries hosted at the [Digital South Asia Library](http://dsal.uchicago.edu/dictionaries/) by the University of Chicago.
 - For the stories, songs are from Mirza Ghalib's verses (out of copyright) and from Hindi films (used here under Fair Use policy).
-
-<hr/>
 
 ## License
 
