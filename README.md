@@ -14,12 +14,13 @@ Explanations on dev.to:
 -  How bots write stories (ToBeDone)
 
 <hr/>
-<hr/>
+
+This README file contains the following sections:
 
  -  [API credentials](#api-credentials)
  -  [Python libraries](#python-libraries)
  -  [Bugs, enhancements](#bugs-enhancements)
- -  [Acknowledgements](#acknowledgements)-
+ -  [Acknowledgements](#acknowledgements)
  -  [License](#license)
 
 <hr/>
