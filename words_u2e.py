@@ -228,10 +228,10 @@ for word_id, song in word_list.items():
         print('Could not tweet Hindi words.')
     sleep(30)# so that the Twitter rate limits are not breached
     # generate a link to the Platt's dictionary, tweet the link
-    platts_url = platts_url_base + urllib.parse.quote((word_id), safe='') + platts_url_suffix
+    platts_url = platts_url_base + urllib.parse.quote((word_id_ur), safe='') + platts_url_suffix
     print(platts_url)
     try:
-        text = "Entry for " + word_id + " from John T. Platt's Dictionary of Urdu, Classical Hindi, and English"
+        text = "Entry for " + word_id_ur + " from John T. Platt's Dictionary of Urdu, Classical Hindi, and English"
         tweet_text = str.join(' ',(text, platts_url))
         api.update_status(status=tweet_text)
     except:
