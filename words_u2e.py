@@ -205,12 +205,22 @@ for word_id, song in word_list.items():
             hindi_meanings = json_data['results'][0]['lexicalEntries'][1]['entries'][0]['senses']
         print(hindi_meanings)
         print('length', len(hindi_meanings))
+        if not ['definitions'] in hindi_meanings:
+            print('looking up cross-ref...')
+            cx = json_data['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['crossReferences']
+            print('cross-ref word :', cx[0]['text'])
+            new_hi_word = cx[0]['text']
+            # ---- I'm repeating code here. I should put it into a function ---------
+            url = api_base_url + hindi_language + '/' + new_hi_word
+            r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
+            json_data = json.loads(json.dumps(r.json()))
+            hindi_meanings = json_data['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
     except:
         print('Could not retrieve Hindi meanings')
     try:
         line1 = 'Hindi meanings of ' + word_id_ur + ' (' + hi_word + ') from OxfordDictionariesAPI: '
         if not hindi_meanings:
-                line2 = 'No entries found'
+                line2 = 'कुछ नहीं मिला शब्दकोष में'
         else:
                 line2 = ''
         a = 0#a counter to check word pos; if not first word, append a comma (for composing tweet text)
