@@ -117,42 +117,52 @@ except:
     print('Could not authenticate with Twitter')
 
 # ----------- pick a word, generate phonetic devanagari, get translations, put on canvas, tweet -----------
-for word_id, song in word_list.items():
-    print(word_id)
-    print(song)
+for word in word_list:
+    print('picked this Urdu word: ', word)
+    temp_list = []
+    for item in word_list[word]:
+        print(item)
+        temp_list.append(item)
+    hi_word = temp_list[0]
+    song = temp_list[1]
+    print("picked these from the word's array: ", hi_word, song)
     # make the pillow canvas ready
     hindiFont = ImageFont.truetype('nakula.ttf', 24)
     arialFont = ImageFont.truetype('C:/Windows/Fonts/arial.ttf', 32)
     calibriFont = ImageFont.truetype('C:/Windows/Fonts/calibri.ttf', 24)
-    tweetpic = Image.new('RGBA', (640, 360), 'white')
+    tweetpic = Image.new('RGBA', (800, 450), 'white')
     draw = ImageDraw.Draw(tweetpic, 'RGBA')
-    draw.rectangle((2, 2, 638, 358), fill='white', outline='#172A82')
+    draw.rectangle((2, 2, 798, 448), fill='white', outline='#172A82')
     # reshape the urdu word so that it can be put on the canvas
-    urdu_text = arabic_reshaper.reshape(word_id)
+    urdu_text = arabic_reshaper.reshape(word)
     bidi_text = get_display(urdu_text)
+    # put the urdu word on the canvas
     draw.text((20, 20), bidi_text, '#172A82', font=arialFont)
     # transliterate the word to phonetic devanagari
-    word_id_ur = word_id
-    word_id.encode('utf-8', 'ignore')
-    for k, v in nast2dev.items():
-        word_id = word_id.replace(k, v + ',')
-    word_id = word_id[:-1]
-    word_id_hi = word_id.split(",")
-    i = 0
-    j = len(word_id_ur)
-    hi_pos = 110# not used yet
-    while i < j:
-        print(word_id_hi[i], word_id_ur[i])
-        urdu_text = arabic_reshaper.reshape(word_id_ur[i])
-        bidi_text = get_display(urdu_text)
-        draw.text((hi_pos, 20), bidi_text, '#172A82', font=arialFont)
-        temp = ' = ' + word_id_hi[i]
-        draw.text((hi_pos + 20, 20), temp, '#172A82', font=hindiFont)
-        i = i + 1
-        hi_pos = hi_pos + 110
-    #draw.text((140, 20), word_transliterate_hi, '#172A82', font=hindiFont)
-    draw.line((10, 70, 628, 70), fill='#172A82')
-    # get the translations
+    try:
+        word_id_ur = word
+        word.encode('utf-8', 'ignore')
+        for k, v in nast2dev.items():
+            word = word.replace(k, v + ',')
+        word = word[:-1]
+        word_id_hi = word.split(",")
+        # put the phonetic devanagari on the canvas
+        i = 0
+        j = len(word_id_ur)
+        hi_pos = 105
+        while i < j:
+            print(word_id_hi[i], word_id_ur[i])
+            urdu_text = arabic_reshaper.reshape(word_id_ur[i])
+            bidi_text = get_display(urdu_text)
+            draw.text((hi_pos, 20), bidi_text, '#172A82', font=arialFont)
+            temp = ' = ' + word_id_hi[i]
+            draw.text((hi_pos + 15, 20), temp, '#172A82', font=hindiFont)
+            i = i + 1
+            hi_pos = hi_pos + 105
+        draw.line((10, 70, 798, 70), fill='#172A82')
+    except:
+        print('Could not put the devanagari characters on the image')
+    # get the urdu meanings and put them on the canvas
     pos = 40
     print(word_id_ur)
     try:
@@ -160,39 +170,34 @@ for word_id, song in word_list.items():
         r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
         json_data = json.loads(json.dumps(r.json()))
         target_word_id = json_data['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
+        if not target_word_id:
+            draw.text((20, 100), "The Oxford Urdu - English dictionary does not", (0, 0, 0, 255), font=calibriFont)
+            draw.text((20, 125), "have a translation for this word yet.", (0, 0, 0, 255), font=calibriFont)
+            draw.text((20, 170), "See if the next tweet fares better? It's supposed to", (0, 0, 0, 255),
+                      font=calibriFont)
+            draw.text((20, 195), "show an entry from John T. Platt's 'Dictionary of Urdu,", (0, 0, 0, 255),
+                      font=calibriFont)
+            draw.text((20, 220), "Classical Hindi, and English'.", (0, 0, 0, 255), font=calibriFont)
         # put each translation on to the Pillow canvas
-        for item in target_word_id:
-            for item2 in item['translations']:
-                trans_word = '- ' + item2['text']
-                # only 60 characters fit into one line of the Pillow image
-                # if the current font sizes are used. So, trim into two sentences
-                # if needed
-                if len(trans_word) > 60:
-                    text_1 = trans_word[:59]
-                    text_2 = "  " + trans_word[60:]
-                    print(text_1)
-                    print(text_2)
-                    pos = pos + 40
-                    draw.text((20, pos), text_1, (0, 0, 0, 255), font=calibriFont)
-                    pos = pos + 40
-                    draw.text((20, pos), text_2, (0, 0, 0, 255), font=calibriFont)
-                else:
+        else:
+            for item in target_word_id:
+                for item2 in item['translations']:
+                    trans_word = '- ' + item2['text']
                     pos = pos + 40
                     print(trans_word)
                     draw.text((20, pos), trans_word, (0, 0, 0, 255), font=calibriFont)
     except:
-        draw.text((20, 100), "The Oxford Urdu - English dictionary does not",(0, 0, 0, 255), font=calibriFont)
-        draw.text((20, 125), "have a translation for this word yet.",(0, 0, 0, 255), font=calibriFont)
-        draw.text((20, 170), "See if the next tweet fares better? It's supposed to",(0, 0, 0, 255), font=calibriFont)
-        draw.text((20, 195), "show an entry from John T. Platt's 'Dictionary of Urdu,",(0, 0, 0, 255), font=calibriFont)
-        draw.text((20, 220), "Classical Hindi, and English'.",(0, 0, 0, 255), font=calibriFont)
+        print('Could not put urdu meanings on canvas')
     # save the image to the local drive and tweet the image
     tweetpic.save('tweetpic.png')
+    print('Word: ' + word_id_ur + ' (' + hi_word + ') Song: ' + song + '. Meanings: Oxford Dictionary')
+    print('=====================')
     try:
-        tweet_text = 'Word: ' + word_id + ' Phonetic: ' + word_transliterate_hi + ' Example: ' + song + '. Word translation from Oxford Dictionaries API.'
+        tweet_text = 'Word: ' + word_id_ur + ' (' + hi_word + ') Song: ' + song + '. Meanings: Oxford Dictionary'
+        print('tweeting Urdu meanings: ', tweet_text)
         api.update_with_media('tweetpic.png', status=tweet_text)
     except:
-        print('Could not post image')
+        print('Could not tweet image')
 # ----------- pick the Hindi word from the list, get meanings, tweet -----------
     print(hi_word)
     hindi_meanings = []
@@ -203,12 +208,14 @@ for word_id, song in word_list.items():
         hindi_meanings = json_data['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
         if not hindi_meanings:
             hindi_meanings = json_data['results'][0]['lexicalEntries'][1]['entries'][0]['senses']
-        print(hindi_meanings)
+        print('upto [senses]: ', hindi_meanings)
         print('length', len(hindi_meanings))
         if not ['definitions'] in hindi_meanings:
             print('looking up cross-ref...')
             cx = json_data['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['crossReferences']
-            print('cross-ref word :', cx[0]['text'])
+            print('cx: ', cx)
+            print(cx[0])
+            print('text :', cx[0]['text'])
             new_hi_word = cx[0]['text']
             # ---- I'm repeating code here. I should put it into a function ---------
             url = api_base_url + hindi_language + '/' + new_hi_word
@@ -218,12 +225,12 @@ for word_id, song in word_list.items():
     except:
         print('Could not retrieve Hindi meanings')
     try:
-        line1 = 'Hindi meanings of ' + word_id_ur + ' (' + hi_word + ') from OxfordDictionariesAPI: '
+        line1 = 'Meanings of ' + word_id_ur + ' (' + hi_word + ') in the Oxford Hindi Dictionary:'
         if not hindi_meanings:
-                line2 = 'कुछ नहीं मिला शब्दकोष में'
+            line2 = 'कुछ नहीं मिला शब्दकोष में'
         else:
-                line2 = ''
-        a = 0#a counter to check word pos; if not first word, append a comma (for composing tweet text)
+            line2 = ''
+        a = 0# a counter to check word position; if not first word, append a comma (for composing tweet text)
         for item in hindi_meanings:
             for item2 in item['definitions']:
                 print(item2)
@@ -235,6 +242,7 @@ for word_id, song in word_list.items():
                 a = a + 1
         print(line1, line2)
         tweet_text = str.join(' ',(line1, line2))
+        print('tweeting Hindi meanings: ', tweet_text)
         sleep(30)  # so that Twitter rate limits are not breached
         api.update_status(status=tweet_text)
     except:
