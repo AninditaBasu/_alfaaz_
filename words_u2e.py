@@ -31,11 +31,6 @@ from time import sleep
 # 8.  Repeat steps 1 through 7 after a delay.
 #
 
-# ------- word list for the day ---------
-word_list = {
-'الفاظ':['एहसास','Ehsaas alfaaz ka mohtaj nahin']
-}
-
 # ------------ declare the OxfordDictionary API credentials  -----------
 app_id = ''
 app_key = ''
@@ -54,6 +49,17 @@ platts_url_suffix = '&matchtype=exact&display=utf8'
 api_base_url = 'https://od-api.oxforddictionaries.com/api/v1/entries/'
 source_language = 'ur'
 target_language = 'en'
+
+# ------- word list for the day ---------
+# the word list is in the form of a dictionary where
+#       the key is the Urdu word in nastalikh, and the value of that key
+#       is a list that contains two items, namely,
+#       the word in devanagari, and a verse in romanised hindi containing that word.
+#       hence, the format of the dictionary is as follows: 'اردو':['हिन्दी','pikchar ka gana']
+
+word_list = {
+'رہگزر':['रहगुज़र','Teri rahguzar ki talash hai']
+}
 
 # ---------- Unicode conversion for Urdu alphabets -------------
 # unicode mapping is from http://www.user.uni-hannover.de/nhtcapri/urdu-alphabet.html
@@ -130,40 +136,41 @@ for word in word_list:
     hindiFont = ImageFont.truetype('nakula.ttf', 24)
     arialFont = ImageFont.truetype('C:/Windows/Fonts/arial.ttf', 32)
     calibriFont = ImageFont.truetype('C:/Windows/Fonts/calibri.ttf', 24)
-    tweetpic = Image.new('RGBA', (800, 450), 'white')
+    calibriSmall = ImageFont.truetype('C:/Windows/Fonts/calibri.ttf', 14)
+    tweetpic = Image.new('RGBA', (800, 600), 'white')
     draw = ImageDraw.Draw(tweetpic, 'RGBA')
-    draw.rectangle((2, 2, 798, 448), fill='white', outline='#172A82')
+    draw.rectangle((2, 2, 798, 598), fill='white', outline='#0072B2')# a coloured border, to demarcate the white background of the picture
     # reshape the urdu word so that it can be put on the canvas
     urdu_text = arabic_reshaper.reshape(word)
     bidi_text = get_display(urdu_text)
     # put the urdu word on the canvas
-    draw.text((20, 20), bidi_text, '#172A82', font=arialFont)
+    draw.text((20, 20), bidi_text, '#0072B2', font=arialFont)
     # transliterate the word to phonetic devanagari
     try:
         word_id_ur = word
         word.encode('utf-8', 'ignore')
         for k, v in nast2dev.items():
             word = word.replace(k, v + ',')
-        word = word[:-1]
+        word = word[:-1]# because the last character will be a comma
         word_id_hi = word.split(",")
         # put the phonetic devanagari on the canvas
         i = 0
         j = len(word_id_ur)
-        hi_pos = 105
+        hi_pos = 85
         while i < j:
             print(word_id_hi[i], word_id_ur[i])
             urdu_text = arabic_reshaper.reshape(word_id_ur[i])
             bidi_text = get_display(urdu_text)
-            draw.text((hi_pos, 20), bidi_text, '#172A82', font=arialFont)
+            draw.text((hi_pos, 60), bidi_text, '#D5001A', font=arialFont)
             temp = ' = ' + word_id_hi[i]
-            draw.text((hi_pos + 15, 20), temp, '#172A82', font=hindiFont)
+            draw.text((hi_pos + 15, 60), temp, '#D5001A', font=hindiFont)
             i = i + 1
             hi_pos = hi_pos + 105
-        draw.line((10, 70, 798, 70), fill='#172A82')
+        draw.line((10, 100, 798, 100), fill='#0072B2')
     except:
         print('Could not put the devanagari characters on the image')
     # get the urdu meanings and put them on the canvas
-    pos = 40
+    pos = 70
     print(word_id_ur)
     try:
         url = api_base_url + source_language + '/' + word_id_ur + '/translations=' + target_language
@@ -175,7 +182,7 @@ for word in word_list:
             draw.text((20, 125), "have a translation for this word yet.", (0, 0, 0, 255), font=calibriFont)
             draw.text((20, 170), "See if the next tweet fares better? It's supposed to", (0, 0, 0, 255),
                       font=calibriFont)
-            draw.text((20, 195), "show an entry from John T. Platt's 'Dictionary of Urdu,", (0, 0, 0, 255),
+            draw.text((20, 195), "show an entry from John T. Platts's 'Dictionary of Urdu,", (0, 0, 0, 255),
                       font=calibriFont)
             draw.text((20, 220), "Classical Hindi, and English'.", (0, 0, 0, 255), font=calibriFont)
         # put each translation on to the Pillow canvas
@@ -186,14 +193,15 @@ for word in word_list:
                     pos = pos + 40
                     print(trans_word)
                     draw.text((20, pos), trans_word, (0, 0, 0, 255), font=calibriFont)
+            draw.text((460,560), "The meanings are from Oxford Urdu - English Dictionary", '#D5001A', font=calibriSmall)
     except:
         print('Could not put urdu meanings on canvas')
     # save the image to the local drive and tweet the image
     tweetpic.save('tweetpic.png')
-    print('Word: ' + word_id_ur + ' (' + hi_word + ') Song: ' + song + '. Meanings: Oxford Dictionary')
+    print('Word: ' + word_id_ur + ' (' + hi_word + '); Song: ' + song)
     print('=====================')
     try:
-        tweet_text = 'Word: ' + word_id_ur + ' (' + hi_word + ') Song: ' + song + '. Meanings: Oxford Dictionary'
+        tweet_text = 'Word: ' + word_id_ur + ' (' + hi_word + '); Song: ' + song
         print('tweeting Urdu meanings: ', tweet_text)
         api.update_with_media('tweetpic.png', status=tweet_text)
     except:
