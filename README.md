@@ -4,7 +4,8 @@
 
 Twitter bots for:
 
-- Urdu-to-English word translations. See `words_u2e`.
+- Urdu-to-English word translations. See `words_u2e.py`.
+- Urdu-Hindi homophones. See `homophones.py`.
 - Twitter stories. See `stories.py`.
 
 Live at [https://twitter.com/\_alfaaz\_](https://twitter.com/_alfaaz_)
@@ -45,7 +46,7 @@ See the [Issues](https://github.com/AninditaBasu/_alfaaz_/issues) page.
 
 -  The code for Nastalikh to Devanagari phonetic transliteration is based on [Shan Ali Khan's](https://twitter.com/itsShanKhan) script posted on [Medium](https://medium.com/@itsShanKhan/transliterate-urdu-to-roman-urdu-in-python-614953b1a4d5).
 -  Word meanings are, in the first instance, from Oxford Dictionaries. If no meaning is found, the fallback dictionaries are the Urdu dictionaries hosted at the [Digital South Asia Library](http://dsal.uchicago.edu/dictionaries/) by the University of Chicago.
-- For the stories, songs are from Mirza Ghalib's verses (out of copyright) and from Hindi films (used here under Fair Use policy).
+- For the stories, songs are from Mirza Ghalib's verses (out of copyright) and from Hindi films (used here under Fair Use Policy).
 
 ## License
 
