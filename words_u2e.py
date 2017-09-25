@@ -123,6 +123,8 @@ except:
     print('Could not authenticate with Twitter')
 
 # ----------- pick a word, generate phonetic devanagari, get translations, put on canvas, tweet -----------
+# ToBeDone: create an outer loop that runs for as many times as there are words in the wordlist
+#       till the outer loop is done, there's an extra sleep cycle after the last word's been tweeted
 for word in word_list:
     print('picked this Urdu word: ', word)
     temp_list = []
@@ -193,20 +195,12 @@ for word in word_list:
                     pos = pos + 40
                     print(trans_word)
                     draw.text((20, pos), trans_word, (0, 0, 0, 255), font=calibriFont)
-            draw.text((460,560), "The meanings are from Oxford Urdu - English Dictionary", '#D5001A', font=calibriSmall)
+            draw.text((460,560), "Meanings retrieved through Oxford Dictionaries API", '#D5001A', font=calibriSmall)
     except:
         print('Could not put urdu meanings on canvas')
-    # save the image to the local drive and tweet the image
+    # save the image to the local drive
     tweetpic.save('tweetpic.png')
-    print('Word: ' + word_id_ur + ' (' + hi_word + '); Song: ' + song)
-    print('=====================')
-    try:
-        tweet_text = 'Word: ' + word_id_ur + ' (' + hi_word + '); Song: ' + song
-        print('tweeting Urdu meanings: ', tweet_text)
-        api.update_with_media('tweetpic.png', status=tweet_text)
-    except:
-        print('Could not tweet image')
-# ----------- pick the Hindi word from the list, get meanings, tweet -----------
+    # pick the Hindi word from the list, get meanings
     print(hi_word)
     hindi_meanings = []
     try:
@@ -232,10 +226,13 @@ for word in word_list:
             hindi_meanings = json_data['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
     except:
         print('Could not retrieve Hindi meanings')
+    # compose the tweet
+    print(hi_word + ' (' + word_id_ur + '): ')
+    print('=====================')
+    line1 = hi_word + ' (' + word_id_ur + '): '
     try:
-        line1 = 'Meanings of ' + word_id_ur + ' (' + hi_word + ') in the Oxford Hindi Dictionary:'
         if not hindi_meanings:
-            line2 = 'कुछ नहीं मिला शब्दकोष में'
+            line2 = '---'
         else:
             line2 = ''
         a = 0# a counter to check word position; if not first word, append a comma (for composing tweet text)
@@ -248,23 +245,26 @@ for word in word_list:
                     text = ', ' + item2
                 line2 = line2 + text
                 a = a + 1
-        print(line1, line2)
         tweet_text = str.join(' ',(line1, line2))
-        print('tweeting Hindi meanings: ', tweet_text)
-        sleep(30)  # so that Twitter rate limits are not breached
-        api.update_status(status=tweet_text)
+        print('tweet text is ---> ', tweet_text)
+        print('tweet length is: ', len(tweet_text))
+        if len(tweet_text) > 138:
+            tweet_text = tweet_text[:138]
+        print('truncated tweet is: ', tweet_text)
+        api.update_with_media('tweetpic.png', status=tweet_text)
     except:
-        print('Could not tweet Hindi words.')
+        print('Could not tweet.')
     sleep(30)# so that the Twitter rate limits are not breached
-    # generate a link to the Platt's dictionary, tweet the link
+    # generate a link to the Platts's dictionary, tweet the link
     platts_url = platts_url_base + urllib.parse.quote((word_id_ur), safe='') + platts_url_suffix
-    print(platts_url)
+    print("Platts's URL: ", platts_url)
     try:
-        text = "Entry for " + word_id_ur + " from John T. Platt's Dictionary of Urdu, Classical Hindi, and English"
+        text = "Entry for " + word_id_ur + " (" + hi_word + ") from John T. Platts's Dictionary of Urdu, Classical Hindi, and English"
         tweet_text = str.join(' ',(text, platts_url))
+        print('tweeting Platts: ', tweet_text)
         api.update_status(status=tweet_text)
     except:
-        print("Could not post Platt's link")
+        print("Could not post Platts's link")
     print('------------------------')
-    # delay for 1.5 hours till the next round of word lookup and tweeting
-    sleep(5400)
+    # delay for 1 hour till the next round of word lookup and tweeting
+    sleep(3600)
