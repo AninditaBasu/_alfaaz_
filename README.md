@@ -1,6 +1,12 @@
-__The version (v1) of the Oxford Dictionaries API used in this code is being sunset as of 30 June 2019. This code has not been updated to use v2 of the Oxford Dictionaries API yet. Therefore, parts of this code will not work after the Oxford Dictionaries API v1 sunset.__
+__The code in this repo is no longer being maintained. For newer stuff, see [Mercury](https://github.com/AninditaBasu/mercury), which uses v2.3 of the Oxford Dictionaries API.__
+
+<hr/>
 
 ![python 3.6.0](https://img.shields.io/badge/python-3.6.0-blue.svg)  ![license: GPL 3.0](https://img.shields.io/badge/license-GPL%203.0-lightgrey.svg)  
+
+__The version of the API used in this code (Oxford Dictionaries API v1) reached sunset on 30 June 2019. Therefore, this code hasn't worked after the API v1 sunset.__
+
+<hr/>
 
 # \_alfaaz\_
 
